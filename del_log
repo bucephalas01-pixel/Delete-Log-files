@@ -1,0 +1,12 @@
+#!/bin/bash
+
+DIR="${1:-.}"  # directory to clean (default current)
+DAYS=7          # files older than this many days
+
+if [ -d "$DIR" ]; then
+  echo "Deleting .log files older than $DAYS days in $DIR ..."
+  find "$DIR" -type f -name "*.log" -mtime +$DAYS -exec rm -f {} \;
+  echo "Done."
+else
+  echo "Directory not found: $DIR"
+fi
