@@ -1,0 +1,29 @@
+#!/bin/bash
+
+read -rp "Enter folder path (leave blank for current): " DIR
+DIR=${DIR:-.}
+read -rp "Delete .log files older than how many days? (default 7): " DAYS
+DAYS=${DAYS:-7}
+
+if [ -d "$DIR" ]; then
+  echo "Finding .log files older than $DAYS days in $DIR..."
+  FILES=$(find "$DIR" -type f -name "*.log" -mtime +$DAYS)
+
+  if [ -z "$FILES" ]; then
+    echo "No .log files older than $DAYS days found."
+    exit 0
+  fi
+
+  echo "Files to be deleted:"
+  echo "$FILES"
+  echo
+  read -rp "Confirm deletion? (y/n): " CONFIRM
+  if [[ "$CONFIRM" =~ ^[Yy]$ ]]; then
+    find "$DIR" -type f -name "*.log" -mtime +$DAYS -exec rm -f {} \;
+    echo "✅ Deleted all .log files older than $DAYS days."
+  else
+    echo "❎ Cancelled."
+  fi
+else
+  echo "❌ Directory not found: $DIR"
+fi
